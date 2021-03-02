@@ -9,25 +9,14 @@ public class PlayerScript : NetworkBehaviour
     [SyncVar] public string playerTurn;
     private GameObject canvas = null;
     
-    public List<string[]> boardState = new List<string[]>();
     
     public bool gameFinished = false;
-    public bool machineTurn = false;
+    [SyncVar] public bool machineActive = true;
+    [SyncVar] public bool yourTurn;
 
     // Start is called before the first frame update
     void Start()
-    {
-        /**GameObject spaces = GameObject.Find("Buttons");
-        Button[] soapButtons = spaces.GetComponent<SpaceScript>().soapButtons;
-        foreach(Button soapButton in soapButtons)
-			soapButton.onClick.AddListener(() => { spaces.GetComponent<SpaceScript>().PlayerTurn(soapButton); });**/
-        string[] boardRow1 = { "_", "_", "_"};
-        string[] boardRow2 = { "_", "_", "_"};
-        string[] boardRow3 = { "_", "_", "_"};
-        boardState.Add(boardRow1);
-        boardState.Add(boardRow2);
-        boardState.Add(boardRow3);
-        
+    {        
     }
 
     public override void OnStartClient(){
@@ -42,6 +31,17 @@ public class PlayerScript : NetworkBehaviour
         finishButton.GetComponent<Button>().onClick.AddListener(gameObject.GetComponent<BoardScript>().CmdTellServerToRestart);
         
     }
+
+    [Command]
+    public void CmdSetMachine(bool state){
+        RpcSetMachine(state);
+    }
+
+    [ClientRpc]
+    public void RpcSetMachine(bool state){
+        machineActive = state;
+    }
+
 
     // Update is called once per frame
     void Update()

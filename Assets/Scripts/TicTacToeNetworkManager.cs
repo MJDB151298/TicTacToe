@@ -7,6 +7,8 @@ public class TicTacToeNetworkManager : NetworkManager
 {
 
     GameObject board;
+    private GameObject playerA;
+    private GameObject playerB;
 
     public override void OnServerAddPlayer(NetworkConnection conn){
         //Debug.Log(numPlayers);
@@ -17,11 +19,25 @@ public class TicTacToeNetworkManager : NetworkManager
 
         if(numPlayers == 1){
             player.GetComponent<PlayerScript>().playerTurn = "x";
-            player.GetComponent<SpaceScript>().againstMachine = true;
+            playerA = player;
+            player.GetComponent<PlayerScript>().RpcSetMachine(true);
+            player.GetComponent<PlayerScript>().yourTurn = true;
         }
         else{
             player.GetComponent<PlayerScript>().playerTurn = "o";
-            player.GetComponent<SpaceScript>().againstMachine = true;
+            playerB = player;   
+            playerA.GetComponent<PlayerScript>().RpcSetMachine(false);
+            player.GetComponent<PlayerScript>().RpcSetMachine(false);
+            player.GetComponent<PlayerScript>().yourTurn = false;
         }
+    }
+
+    public override void OnServerDisconnect(NetworkConnection conn){
+        if(numPlayers == 1){
+          playerA.GetComponent<PlayerScript>().yourTurn = true;  
+          playerA.GetComponent<PlayerScript>().RpcSetMachine(true);
+          playerA.GetComponent<BoardScript>().RpcRestartBoard(); 
+        }
+        base.OnServerDisconnect(conn);
     }
 }

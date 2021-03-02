@@ -52,7 +52,10 @@ public class BoardScript : NetworkBehaviour
         buttonSelected.GetComponentInChildren<Text>().text = letter;
         buttonSelected.interactable = false;
         Debug.Log(letter + " just updated the board");
-       
+        GameObject player = ClientScene.localPlayer.gameObject;
+        Debug.Log(player.GetComponent<PlayerScript>().yourTurn);
+        player.GetComponent<PlayerScript>().yourTurn = !player.GetComponent<PlayerScript>().yourTurn;
+        Debug.Log(player.GetComponent<PlayerScript>().yourTurn);
         //player.GetComponent<PlayerScript>().playerTurn = letter == "x" ? "o" : "x";
     }
 
@@ -180,9 +183,9 @@ public class BoardScript : NetworkBehaviour
         GameObject canvas = gameObject.transform.GetChild(0).gameObject;
         gameObject.GetComponent<SpaceScript>().RestartGrid();
 
-        for (int i = 0; i < 3; i++)
-            for (int j = 0; j < 3; j++)
-                gameObject.GetComponent<PlayerScript>().boardState[i][j] = "_";
+        //for (int i = 0; i < 3; i++)
+        //    for (int j = 0; j < 3; j++)
+        //        gameObject.GetComponent<PlayerScript>().boardState[i][j] = "_";
         canvas.transform.GetChild(3).gameObject.SetActive(false);
     }
 

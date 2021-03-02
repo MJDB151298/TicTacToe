@@ -89,22 +89,13 @@ public class SpaceScript : NetworkBehaviour
 
 		GameObject player = ClientScene.localPlayer.gameObject;
         string letter = player.GetComponent<PlayerScript>().playerTurn;
-		if(!againstMachine){
+		if(!player.GetComponent<PlayerScript>().machineActive && player.GetComponent<PlayerScript>().yourTurn){
 			CmdPlayerTurn(letter, rowpos, colpos);
 		}
-		else{
+		else if(player.GetComponent<PlayerScript>().machineActive){
 			gameObject.GetComponent<BoardScript>().SinglePlayerUpdateBoard("x", rowpos, colpos);
 			List<string[]> board = gameObject.GetComponent<BoardScript>().getSelectedPositions();
-			string firstrow = board[0][0] + " " + board[1][0] + " " + board[2][0];
-        	string secondrow = board[0][1] + " " + board[1][1] + " " + board[2][1];
-        	string thirdrow = board[0][2] + " " + board[1][2] + " " + board[2][2];
-        	Debug.Log(firstrow);
-        	Debug.Log(secondrow);
-        	Debug.Log(thirdrow);
 			var bestMoves = gameObject.GetComponent<MachineScript>().FindBestMove(board);
-			
-			//Debug.Log(bestMoves);
-			//Button machineButton = GameObject.Find("SoapButton" + bestMoves.Item1.ToString() + bestMoves.Item2.ToString()).GetComponent<Button>();
 			gameObject.GetComponent<BoardScript>().SinglePlayerUpdateBoard("o", bestMoves.Item1, bestMoves.Item2);
 		}
 		
@@ -115,12 +106,6 @@ public class SpaceScript : NetworkBehaviour
 		if(!againstMachine){
 			gameObject.GetComponent<BoardScript>().RpcUpdateBoard(letter, rowpos, colpos);
 		}
-
-		//Machine's turn
-		if(againstMachine){
-			
-			//gameObject.GetComponent<PlayerScript>().machineTurn = true;
-        }
 	}
 
 
